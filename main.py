@@ -3,6 +3,7 @@ import sqlite3
 from predict import predict
 from train import train
 from server import Server
+import pickle
 import cv2
 
 path = "../../Dataset/IRpic"
@@ -10,11 +11,13 @@ path = "../../Dataset/IRpic"
 
 def initialize():
     try:
-        model = cv2.face.LBPHFaceRecognizer()
-        model.read('model/model.cv2')
+        model = pickle.load(open('model/model.pkl', 'rb'))
+        # model = cv2.face.LBPHFaceRecognizer()
+        # model.read('model/model.cv2')
     except:
         model = train(os.path.join(path, 'raw'))
-        model.write('model/model.cv2')
+        # model.write('model/model.cv2')
+        pickle.dump(model, open('model/model.pkl', 'wb'))
 
     conn = sqlite3.connect(os.path.join(path, 'raw', 'names.db'))
     c = conn.cursor()
